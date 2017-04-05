@@ -27,7 +27,7 @@ public class Utils {
     /**
      * Create an imageview of a right facing arrow.
      * @param size The width. The height is calculated as width / 2.0.
-     * @param height
+     * @param //height
      * @return
      */
     public static ImageView createBallImageView(double size) {

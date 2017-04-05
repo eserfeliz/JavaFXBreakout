@@ -15,11 +15,8 @@ public class Ball extends Sprite {
 
     @Override
     public Node createView() {
-        Circle ball = new Circle(Settings.BALL_RADIUS);
-        ball.setTranslateY(Settings.BALL_RADIUS * -1);
-        System.out.println(ball);
-
-        return ball;
+        Circle ball;
+        return ball = new Circle(Settings.BALL_RADIUS);
     }
 
     @Override
@@ -39,13 +36,13 @@ public class Ball extends Sprite {
         if (location.x >= Settings.SCENE_WIDTH) {
             velocity.x = velocity.absX() * -1;
         }
-        if (location.x <= (0 + Settings.BALL_RADIUS)) {
+        if (location.x <= (Settings.BALL_RADIUS)) {
             velocity.x = velocity.absX();
         }
         if (location.y >= Settings.SCENE_HEIGHT) {
             velocity.y = velocity.absY() * -1;
         }
-        if (location.y <= (0 + Settings.BALL_RADIUS)) {
+        if (location.y <= (Settings.BALL_RADIUS)) {
             velocity.y = velocity.absY();
         }
         location.add(velocity);
