@@ -41,17 +41,16 @@ public class Vector2D {
         y /= n;
     }
 
-    public void abs() {
-        x = Math.abs(x);
-        y = Math.abs(y);
+    public Vector2D abs(double x, double y) {
+        return new Vector2D(Math.abs(x), Math.abs(y));
     }
 
-    public void absX() {
-        x = Math.abs(x);
+    public double absX() {
+        return Math.abs(x);
     }
 
-    public void absY() {
-        y = Math.abs(y);
+    public double absY() {
+        return Math.abs(y);
     }
 
     public void normalize() {

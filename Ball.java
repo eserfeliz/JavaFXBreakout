@@ -15,8 +15,6 @@ public class Ball extends Sprite {
 
     @Override
     public Node createView() {
-        //return Utils.createBallImageView( (int) width);
-        //Circle ball = new Circle((Settings.SCENE_WIDTH / 2.0), (Settings.SCENE_HEIGHT - Settings.PADDLE_Y_OFFSET - Settings.BALL_RADIUS), Settings.BALL_RADIUS, Color.web("black", 0.85));
         Circle ball = new Circle(Settings.BALL_RADIUS);
         ball.setTranslateY(Settings.BALL_RADIUS * -1);
         System.out.println(ball);
@@ -26,33 +24,11 @@ public class Ball extends Sprite {
 
     @Override
     public void move() {
-        System.out.println("location: " + location.x + ", " + location.y);
-        System.out.println("velocity: " + velocity.x + ", " + velocity.y);
-        System.out.println("acceleration: " + acceleration.x + ", " + acceleration.y);
-
-        //System.out.println(Main.isBallMoving());
         if (!Main.isBallMoving()) {
-            //System.out.println("Here");
-            Vector2D dir = Vector2D.subtract(new Vector2D(0.0, 344.0), location);
-            dir.normalize();
-            dir.multiply(ballMaxSpeed);
-            acceleration = dir;
-        } else {
-            // set velocity depending on acceleration
-            velocity.add(acceleration);
-
-            // limit velocity to max speed
-            velocity.limit(ballMaxSpeed);
-
-            // change location depending on velocity
+            velocity.set(0.5, -0.5);
             location.add(velocity);
-
-            // angle: towards velocity (ie target)
-            // angle = velocity.heading2D();
-
-            // clear acceleration
-            //acceleration.multiply(0);
         }
+        location.add(velocity);
 
     }
 
@@ -60,27 +36,19 @@ public class Ball extends Sprite {
     public void track(Vector2D target) {}
 
     public void checkEdges() {
-        if (this.location.x <= (2 * Settings.BALL_RADIUS)) {
-            //System.out.println("We SHOULD be turning around here...");
-            acceleration.absX();
-            velocity.add(acceleration);
-            //location.add(velocity);
+        if (location.x >= Settings.SCENE_WIDTH) {
+            velocity.x = velocity.absX() * -1;
         }
-
-        if (this.location.x >= (Settings.SCENE_WIDTH - Settings.BALL_RADIUS)) {
-            System.out.println(Settings.SCENE_WIDTH - Settings.BALL_RADIUS);
-            //velocity.limit(0.0001);
-            acceleration.add(new Vector2D(-1.0, 0));
-            velocity.add(acceleration);
-            //location.add(velocity);
+        if (location.x <= (0 + Settings.BALL_RADIUS)) {
+            velocity.x = velocity.absX();
         }
-
-        if (this.location.y <= (2 * Settings.BALL_RADIUS)) {
-            //System.out.println("TURNING AROUND AT y = 0!");
-            acceleration.absY();
-            velocity.add(acceleration);
-            //location.add(velocity);
+        if (location.y >= Settings.SCENE_HEIGHT) {
+            velocity.y = velocity.absY() * -1;
         }
+        if (location.y <= (0 + Settings.BALL_RADIUS)) {
+            velocity.y = velocity.absY();
+        }
+        location.add(velocity);
     }
 
     public void checkPaddle() {

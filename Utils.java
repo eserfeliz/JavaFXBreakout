@@ -60,8 +60,6 @@ public class Utils {
         System.out.println("In creatBallImage()");
 
         Circle ball = new Circle( 0, 0, width, Color.BLACK); // left/right lines of the arrow
-        //ball.setStrokeLineJoin(StrokeLineJoin.MITER);
-        //ball.setStrokeLineCap(StrokeLineCap.SQUARE);
         ball.setStroke(stroke);
         ball.setFill(fill);
         ball.setStrokeWidth(strokeWidth);

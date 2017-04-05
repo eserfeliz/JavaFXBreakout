@@ -52,14 +52,6 @@ public class Main extends Application {
             @Override
             public void handle(long now) {
 
-                // seek attractor location, apply force to get towards it
-                /*
-                allVehicles.forEach(vehicle -> {
-
-                    vehicle.seek( attractor.getLocation());
-
-                });
-                */
                 paddleTarget = new Vector2D(mouseLoc.x, paddle.getLayoutY());
 
                 paddle.track(paddleTarget);

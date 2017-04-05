@@ -24,9 +24,6 @@ public class Paddle extends Sprite {
 
     @Override
     public void move() {
-        //System.out.println("location: " + location.x + ", " + location.y);
-        //System.out.println("velocity: " + velocity.x + ", " + velocity.y);
-        //System.out.println("acceleration: " + acceleration.x + ", " + acceleration.y);
         this.acceleration.y = 0;
         velocity.add(acceleration);
         velocity.limit(maxSpeed);
@@ -51,6 +48,7 @@ public class Paddle extends Sprite {
 
     @Override
     public void track(Vector2D target) {
+
         Vector2D desired = Vector2D.subtract(target, location);
 
         // The distance is the magnitude of the vector pointing from location to target.
@@ -76,5 +74,6 @@ public class Paddle extends Sprite {
         steer.limit(maxForce);
 
         applyForce(steer);
+
     }
 }

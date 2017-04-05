@@ -23,5 +23,5 @@ public class Settings {
     public static final int PADDLE_Y_OFFSET = 550;
 
     public static final int BALL_RADIUS = 6;
-    public static final double BALL_MAX_SPEED = 5;
+    public static final double BALL_MAX_SPEED = 4;
 }
