@@ -15,6 +15,7 @@ public class Main extends Application {
     Layer gameWorld;
 
     List<Ball> balls = new ArrayList<Ball>();
+    List<Brick> bricks = new ArrayList<>();
     Paddle paddle;
 
     AnimationTimer gameTimer;
@@ -27,6 +28,8 @@ public class Main extends Application {
 
     private static boolean gameStarted = false;
     private static boolean ballMoving = false;
+
+    int bricksRemaining = 0;
 
     public void start(Stage primaryStage) throws Exception{
         primaryStage.setTitle("Breakout");
@@ -93,6 +96,65 @@ public class Main extends Application {
 
         // add attractors
         addPaddle();
+
+        // add Bricks
+        int yPos = Settings.BRICK_Y_OFFSET;
+        int xPos = Settings.BRICK_SEP / 2;
+
+        for (int i = 1; i <= Settings.NBRICK_ROWS; i++) {
+            for (int j = 1; j <= Settings.NBRICKS_PER_ROW; j++) {
+                String brickColor = "";
+
+                bricksRemaining += 1;
+                switch (i) {
+                    case 1:
+                    case 2:
+                        brickColor = "red";
+                        break;
+                    case 3:
+                    case 4:
+                        brickColor = "orange";
+                        break;
+                    case 5:
+                    case 6:
+                        brickColor = "yellow";
+                        break;
+                    case 7:
+                    case 8:
+                        brickColor = "green";
+                        break;
+                    case 9:
+                    case 10:
+                        brickColor = "cyan";
+                        break;
+                    default:
+                        break;
+                }
+                addBricks(xPos, yPos, brickColor);
+                xPos = xPos + Settings.BRICK_SEP + Settings.BRICK_WIDTH;
+            }
+            xPos = Settings.BRICK_SEP / 2;
+            yPos += Settings.BRICK_HEIGHT + Settings.BRICK_SEP;
+        }
+    }
+
+    private void addBricks(double xPos, double yPos, String color) {
+
+        Layer layer = gameWorld;
+
+        double x = xPos;
+        double y = yPos;
+
+        double width = Settings.BRICK_WIDTH;
+        double height = Settings.BRICK_HEIGHT;
+
+        Vector2D location = new Vector2D( x,y);
+        Vector2D velocity = new Vector2D( 0,0);
+        Vector2D acceleration = new Vector2D( 0,0);
+
+        Brick brick = new Brick(layer, location, velocity, acceleration, width, height, color);
+
+        bricks.add(brick);
     }
 
     private void addPaddle() {

@@ -15,6 +15,8 @@ public abstract class Sprite extends Region {
 
     Node view;
 
+    String color = "black";
+
     // view dimensions
     double width;
     double height;
@@ -37,6 +39,32 @@ public abstract class Sprite extends Region {
         this.height = height;
         this.centerX = width / 2;
         this.centerY = height / 2;
+
+        this.view = createView();
+
+        setPrefSize(width, height);
+
+        // add view to this node
+        getChildren().add( view);
+
+        // add this node to layer
+        layer.getChildren().add( this);
+
+    }
+
+    public Sprite( Layer layer, Vector2D location, Vector2D velocity, Vector2D acceleration, double width, double height, String color) {
+
+        this.layer = layer;
+
+        this.location = location;
+        this.velocity = velocity;
+        this.acceleration = acceleration;
+        this.width = width;
+        this.height = height;
+        this.centerX = width / 2;
+        this.centerY = height / 2;
+
+        this.color = color;
 
         this.view = createView();
 

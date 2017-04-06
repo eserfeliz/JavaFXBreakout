@@ -22,6 +22,24 @@ public class Settings {
 
     public static final int PADDLE_Y_OFFSET = 550;
 
-    public static final int BALL_RADIUS = 6;
+    public static final int BALL_RADIUS = 5;
     public static final double BALL_MAX_SPEED = 4;
+
+    /** Number of bricks per row */
+    public static final int NBRICKS_PER_ROW = 10;
+
+    /** Number of rows of bricks */
+    public static final int NBRICK_ROWS = 10;
+
+    /** Separation between bricks */
+    public static final int BRICK_SEP = 4;
+
+    /** Width of a brick */
+    public static final int BRICK_WIDTH =
+            ((int) SCENE_WIDTH - (NBRICKS_PER_ROW - 1) * BRICK_SEP) / NBRICKS_PER_ROW;
+
+    /** Height of a brick */
+    public static final int BRICK_HEIGHT = 8;
+
+    public static final int BRICK_Y_OFFSET = 70;
 }
