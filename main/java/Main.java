@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class Main extends Application {
 
@@ -55,7 +56,7 @@ public class Main extends Application {
                 paddleTarget = new Vector2D(mouseLoc.x, paddle.getLayoutY());
 
                 paddle.track(paddleTarget);
-                balls.forEach(Ball::checkEdges);
+                balls.forEach(Ball::collisionAtBoundary);
 
                 // move sprite
 
@@ -64,12 +65,20 @@ public class Main extends Application {
                 ballMoving = true;
 
                 // check ball for collision with borders
-                balls.forEach(Ball::checkEdges);
+                balls.forEach(Ball::collisionAtBoundary);
+                //balls.forEach(ball -> execute(paddle, Ball::collisionWithPaddle));
+                for (Ball ball:balls) {
+                    execute(paddle, ball::collisionWithPaddle);
+                }
 
                 // update in fx scene
                 paddle.display();
                 balls.forEach(Sprite::display);
 
+            }
+
+            private void execute(Paddle paddle, Consumer<Paddle> c) {
+                c.accept(paddle);
             }
         };
 

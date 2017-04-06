@@ -78,5 +78,12 @@ public class Utils {
 
     }
 
+    public static double getDistance(double ax, double ay, double bx, double by) {
+        double a = Math.abs(ax - bx);
+        double b = Math.abs(ay - by);
+
+        return Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
+    }
+
 
 }
