@@ -1,12 +1,16 @@
 import javafx.scene.Node;
 import javafx.scene.shape.Circle;
 
+import java.util.List;
+
 /**
  * Created by lphernandez on 4/2/17.
  */
 public class Ball extends Sprite {
 
-    double ballMaxSpeed = Settings.BALL_MAX_SPEED;
+    //double ballMaxSpeed = Settings.BALL_MAX_SPEED;
+
+    private List<Vector2D> brickCollisionPoints;
 
     public Ball(Layer layer, Vector2D location, Vector2D velocity, Vector2D acceleration, double width, double height) {
         super(layer, location, velocity, acceleration, width, height);
@@ -62,16 +66,56 @@ public class Ball extends Sprite {
     }
 
     public void collisionWithBrick(Brick b, double d) {
-        if ((Settings.BALL_RADIUS >= d) && b.isVisible()) {
-            if (Settings.BALL_RADIUS >= Math.abs(((int) (b.location.x - (b.width / 2))) - location.x)) {
-                velocity.x = (velocity.absX() * -1);
-            } else if (Settings.BALL_RADIUS >= Math.abs(location.x - ((int) (b.location.x + (b.width / 2))))) {
-                velocity.x = velocity.absX();
+        int combinationResult = 0;
+
+        brickCollisionPoints = b.getBrickCollisionPoints();
+
+        for (int i = 0; i < brickCollisionPoints.size(); i++) {
+            if ((i == 0) && (Settings.BALL_RADIUS >= (brickCollisionPoints.get(i).x - location.x)) && ((brickCollisionPoints.get(i).x - location.x) >= 0)) {
+                combinationResult += 1;
             }
-            if (Settings.BALL_RADIUS >= Math.abs(location.y - ((int) (b.location.y + (b.height / 2))))) {
-                velocity.y = velocity.absY();
-            } else if (Settings.BALL_RADIUS >= Math.abs(((int) (b.location.y - (b.height / 2))) - location.y)) {
-                velocity.y = (velocity.absY() * -1);
+            if ((i == 1) && (Settings.BALL_RADIUS >= (brickCollisionPoints.get(i).y - location.y)) && ((brickCollisionPoints.get(i).y - location.y) >= 0)) {
+                combinationResult += 3;
+            }
+            if ((i == 2) && (Settings.BALL_RADIUS >= (location.x - brickCollisionPoints.get(i).x)) && ((location.x - brickCollisionPoints.get(i).x) >= 0)) {
+                combinationResult += 6;
+            }
+            if ((i == 3) && (Settings.BALL_RADIUS >= (location.y - brickCollisionPoints.get(i).y)) && ((location.y - brickCollisionPoints.get(i).y) >= 0)) {
+                combinationResult += 10;
+            }
+            switch (combinationResult) {
+                case 0:
+                    break;
+                case 1:
+                    velocity.x = (velocity.absX() * -1);
+                    break;
+                case 3:
+                    velocity.y = (velocity.absY() * -1);
+                    break;
+                case 4:
+                    velocity.x = (velocity.absX() * -1);
+                    velocity.y = (velocity.absY() * -1);
+                    break;
+                case 6:
+                    velocity.x = velocity.absX();
+                    break;
+                case 9:
+                    velocity.x = velocity.absX();
+                    velocity.y = (velocity.absY() * -1);
+                    break;
+                case 10:
+                    velocity.y = velocity.absY();
+                    break;
+                case 11:
+                    velocity.x = (velocity.absX() * -1);
+                    velocity.y = velocity.absY();
+                    break;
+                case 16:
+                    velocity.x = velocity.absX();
+                    velocity.y = velocity.absY();
+                    break;
+                default:
+                    break;
             }
             location.add(velocity);
             b.setVisible(false);
