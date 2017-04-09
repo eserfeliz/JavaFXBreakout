@@ -68,10 +68,10 @@ public class Ball extends Sprite {
             } else if (Settings.BALL_RADIUS >= Math.abs(location.x - ((int) (b.location.x + (b.width / 2))))) {
                 velocity.x = velocity.absX();
             }
-            if (Settings.BALL_RADIUS >= Math.abs(((int) (b.location.y - (b.height / 2))) - location.y)) {
-                velocity.y = (velocity.absY() * -1);
-            } else if (Settings.BALL_RADIUS >= Math.abs(location.y - ((int) (b.location.y + (b.height / 2))))) {
+            if (Settings.BALL_RADIUS >= Math.abs(location.y - ((int) (b.location.y + (b.height / 2))))) {
                 velocity.y = velocity.absY();
+            } else if (Settings.BALL_RADIUS >= Math.abs(((int) (b.location.y - (b.height / 2))) - location.y)) {
+                velocity.y = (velocity.absY() * -1);
             }
             location.add(velocity);
             b.setVisible(false);
