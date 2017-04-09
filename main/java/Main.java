@@ -14,7 +14,7 @@ public class Main extends Application {
 
     Layer gameWorld;
 
-    List<Ball> balls = new ArrayList<Ball>();
+    List<Ball> balls = new ArrayList<>();
     List<Brick> bricks = new ArrayList<>();
     Paddle paddle;
 
@@ -57,6 +57,7 @@ public class Main extends Application {
             public void handle(long now) {
 
                 paddleTarget = new Vector2D(mouseLoc.x, paddle.getLayoutY());
+                double distance = 0;
 
                 paddle.track(paddleTarget);
                 balls.forEach(Ball::collisionAtBoundary);
@@ -69,9 +70,20 @@ public class Main extends Application {
 
                 // check ball for collision with borders
                 balls.forEach(Ball::collisionAtBoundary);
-                //balls.forEach(ball -> execute(paddle, Ball::collisionWithPaddle));
+
+                // check ball for collision with paddle
                 for (Ball ball:balls) {
-                    execute(paddle, ball::collisionWithPaddle);
+                    execute(paddle, ball::collisionWithFieldObj);
+                }
+
+                // check ball for collision with bricks
+
+                for (Ball ball:balls) {
+                    for (int i = bricks.size() - 1; i >= 0; i--) {
+                        if (bricks.get(i).isVisible()) {
+                            executeForBrick(bricks.get(i), ball::collisionWithFieldObj);
+                        }
+                    }
                 }
 
                 // update in fx scene
@@ -80,9 +92,13 @@ public class Main extends Application {
 
             }
 
-            private void execute(Paddle paddle, Consumer<Paddle> c) {
+            private void executeForPaddle(Paddle paddle, Consumer<Paddle> c) {
                 c.accept(paddle);
             }
+
+            private void executeForBrick(Brick brick, Consumer<Brick> c) { c.accept(brick); }
+
+            private void execute(Sprite sprite, Consumer<Sprite> s) { s.accept(sprite);}
         };
 
         gameTimer.start();
@@ -99,7 +115,7 @@ public class Main extends Application {
 
         // add Bricks
         int yPos = Settings.BRICK_Y_OFFSET;
-        int xPos = Settings.BRICK_SEP / 2;
+        int xPos = ((Settings.BRICK_SEP / 2) + (Settings.BRICK_WIDTH / 2));
 
         for (int i = 1; i <= Settings.NBRICK_ROWS; i++) {
             for (int j = 1; j <= Settings.NBRICKS_PER_ROW; j++) {
@@ -133,7 +149,7 @@ public class Main extends Application {
                 addBricks(xPos, yPos, brickColor);
                 xPos = xPos + Settings.BRICK_SEP + Settings.BRICK_WIDTH;
             }
-            xPos = Settings.BRICK_SEP / 2;
+            xPos = ((Settings.BRICK_SEP / 2) + (Settings.BRICK_WIDTH / 2));
             yPos += Settings.BRICK_HEIGHT + Settings.BRICK_SEP;
         }
     }
@@ -142,18 +158,14 @@ public class Main extends Application {
 
         Layer layer = gameWorld;
 
-        double x = xPos;
-        double y = yPos;
-
         double width = Settings.BRICK_WIDTH;
         double height = Settings.BRICK_HEIGHT;
 
-        Vector2D location = new Vector2D( x,y);
+        Vector2D location = new Vector2D(xPos,yPos);
         Vector2D velocity = new Vector2D( 0,0);
         Vector2D acceleration = new Vector2D( 0,0);
 
         Brick brick = new Brick(layer, location, velocity, acceleration, width, height, color);
-
         bricks.add(brick);
     }
 
@@ -205,10 +217,7 @@ public class Main extends Application {
     private void addListeners() {
 
         // capture mouse position
-        scene.addEventFilter(MouseEvent.ANY, e -> {
-            mouseLoc.set(e.getX(), e.getY());
-            //System.out.println(e.getX() + " " + e.getY());
-        });
+        scene.addEventFilter(MouseEvent.ANY, e -> mouseLoc.set(e.getX(), e.getY()));
 
         // move paddle via mouse
         mouseGestures.trackMouseMovement(scene);

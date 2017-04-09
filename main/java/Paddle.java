@@ -1,4 +1,3 @@
-import javafx.print.Collation;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -16,7 +15,6 @@ public class Paddle extends Sprite {
     public Node createView() {
 
         Rectangle rect = new Rectangle(this.width, this.height);
-
         rect.setStroke(Color.BLACK);
         rect.setFill(Color.BLACK);
         return rect;
@@ -29,21 +27,19 @@ public class Paddle extends Sprite {
         velocity.limit(maxSpeed);
         location.add(velocity);
         if (this.location.x <= this.width) {
-            acceleration.multiply(0.1);
+            acceleration.multiply(0.01);
             if (this.location.x <= (this.width / 2)) {
                 location.set((width / 2), location.y);
-                acceleration.multiply(0.01);
+                acceleration.multiply(0.001);
             }
         }
         if (this.location.x >= this.width) {
-            acceleration.multiply(0.1);
+            acceleration.multiply(0.01);
             if (location.x >= (Settings.SCENE_WIDTH - (width / 2))) {
                 location.set(Settings.SCENE_WIDTH - (width / 2), location.y);
-                acceleration.multiply(0.01);
+                acceleration.multiply(0.001);
             }
         }
-
-        acceleration.multiply(0);
     }
 
     @Override
@@ -68,8 +64,8 @@ public class Paddle extends Sprite {
         else {
             desired.multiply(maxSpeed);
         }
-
         // The usual steering = desired - velocity
+
         Vector2D steer = Vector2D.subtract(desired, velocity);
         steer.limit(maxForce);
 

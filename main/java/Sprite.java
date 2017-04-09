@@ -81,6 +81,7 @@ public abstract class Sprite extends Region {
     public abstract Node createView();
 
     public void applyForce(Vector2D force) {
+        // add specified amount of foce to acceleration
         acceleration.add(force);
     }
 
@@ -92,11 +93,7 @@ public abstract class Sprite extends Region {
      * Update node position
      */
     public void display() {
-
         relocate(location.x - centerX, location.y - centerY);
-
-        setRotate(Math.toDegrees( angle));
-
     }
 
     public Vector2D getVelocity() {

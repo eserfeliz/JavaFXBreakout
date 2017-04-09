@@ -18,9 +18,7 @@ public class MouseGestures {
     EventHandler<MouseEvent> onMouseMovedEventHandler = new EventHandler<MouseEvent>() {
         @Override
         public void handle(MouseEvent event) {
-
-            double offsetX = event.getSceneX() - moveContext.x;
-            moveContext.x = event.getSceneX();
+            moveContext.x = event.getX();
         }
     };
 

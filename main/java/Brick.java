@@ -13,10 +13,8 @@ public class Brick extends Sprite {
 
     @Override
     public Node createView() {
-        Rectangle brick = new Rectangle(Settings.BRICK_WIDTH, Settings.BRICK_HEIGHT, Color.web(color, 0.75));
-        brick.setX(location.x);
-        brick.setY(location.y);
-        brick.relocate(location.x, location.y);
+        Rectangle brick = new Rectangle(((int) (location.x - width / 2)), ((int) (location.y - height / 2)), Settings.BRICK_WIDTH, Settings.BRICK_HEIGHT);
+        brick.setFill(Color.web(color, 0.50));
 
         return brick;
     }

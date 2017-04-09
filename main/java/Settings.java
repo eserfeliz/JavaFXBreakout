@@ -22,8 +22,7 @@ public class Settings {
 
     public static final int PADDLE_Y_OFFSET = 550;
 
-    public static final int BALL_RADIUS = 5;
-    public static final double BALL_MAX_SPEED = 4;
+    public static final double BALL_MAX_SPEED = 2;
 
     /** Number of bricks per row */
     public static final int NBRICKS_PER_ROW = 10;
@@ -42,4 +41,6 @@ public class Settings {
     public static final int BRICK_HEIGHT = 8;
 
     public static final int BRICK_Y_OFFSET = 70;
+
+    public static final int BALL_RADIUS = (int) (BRICK_HEIGHT / 2);
 }
