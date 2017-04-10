@@ -8,8 +8,6 @@ import java.util.List;
  */
 public class Ball extends Sprite {
 
-    //double ballMaxSpeed = Settings.BALL_MAX_SPEED;
-
     private List<Vector2D> brickCollisionPoints;
 
     public Ball(Layer layer, Vector2D location, Vector2D velocity, Vector2D acceleration, double width, double height) {
@@ -24,7 +22,7 @@ public class Ball extends Sprite {
     @Override
     public void move() {
         if (!Main.isBallMoving()) {
-            velocity.set(-0.5, -0.5);
+            velocity.set(-0.75, -0.75);
             location.add(velocity);
         }
         velocity.limit(maxSpeed);
@@ -42,7 +40,7 @@ public class Ball extends Sprite {
             velocity.x = velocity.absX();
         }
         if (location.y >= Settings.SCENE_HEIGHT) {
-            velocity.y = velocity.absY() * -1;
+            Main.removeBall(this);
         }
         if (location.y <= (Settings.BALL_RADIUS)) {
             velocity.y = velocity.absY();
@@ -50,7 +48,7 @@ public class Ball extends Sprite {
         location.add(velocity);
     }
 
-    public void collisionWithPaddle(Paddle p, double d) {
+    private void collisionWithPaddle(Paddle p, double d) {
         if (Settings.BALL_RADIUS >= d) {
             if (location.x <= (p.location.x - ((int) (p.width / 2)) + 10)) {
                 velocity.y = velocity.absY() * -1;
@@ -65,7 +63,7 @@ public class Ball extends Sprite {
         }
     }
 
-    public void collisionWithBrick(Brick b, double d) {
+    private void collisionWithBrick(Brick b, double d) {
         int combinationResult = 0;
 
         brickCollisionPoints = b.getBrickCollisionPoints();
