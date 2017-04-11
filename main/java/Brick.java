@@ -11,7 +11,6 @@ import java.util.List;
 public class Brick extends Sprite {
 
     private Vector2D left, top, right, bottom;
-    private List<Vector2D> brickCollisionPoints = Arrays.asList(left, top, right, bottom);
 
     public Brick(Layer layer, Vector2D location, Vector2D velocity, Vector2D acceleration, double width, double height, String brickColor) {
         super(layer, location, velocity, acceleration, width, height, brickColor);
@@ -39,6 +38,7 @@ public class Brick extends Sprite {
     }
 
     public List<Vector2D> getBrickCollisionPoints() {
+        List<Vector2D> brickCollisionPoints = Arrays.asList(left, top, right, bottom);
         return brickCollisionPoints;
     }
 }

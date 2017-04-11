@@ -64,8 +64,8 @@ public class Paddle extends Sprite {
         else {
             desired.multiply(maxSpeed);
         }
-        // The usual steering = desired - velocity
 
+        // The usual steering = desired - velocity
         Vector2D steer = Vector2D.subtract(desired, velocity);
         steer.limit(maxForce);
 

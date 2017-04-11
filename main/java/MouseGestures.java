@@ -15,7 +15,5 @@ public class MouseGestures {
 
     private EventHandler<MouseEvent> onMouseMovedEventHandler = event -> moveContext.x = event.getX();
 
-    private class MoveContext {
-        double x, y;
-    }
+    private class MoveContext { double x, y; }
 }
