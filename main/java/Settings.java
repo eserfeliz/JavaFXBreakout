@@ -42,5 +42,5 @@ public class Settings {
 
     public static final int BRICK_Y_OFFSET = 70;
 
-    public static final int BALL_RADIUS = (int) (BRICK_HEIGHT / 2);
+    public static final int BALL_RADIUS = 5;
 }

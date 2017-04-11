@@ -16,6 +16,7 @@ public class Main extends Application {
     private static Layer gameWorld;
 
     private static List<Ball> balls = new ArrayList<>();
+    private static List<Ball> ballsToRemove = new ArrayList<>();
     private List<Brick> bricks = new ArrayList<>();
     private Paddle paddle;
 
@@ -30,11 +31,13 @@ public class Main extends Application {
 
     private static boolean gameStarted = false;
     private static boolean ballMoving = false;
+    private static boolean turnInProgress = false;
 
     private int bricksRemaining = 0;
-    private int livesRemaining = 2;
+    public static int livesRemaining = 2;
+    public static int numOfBalls = 0;
 
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
         if (!gameStarted) {
             prepareGame(primaryStage);
             addListeners();
@@ -48,63 +51,101 @@ public class Main extends Application {
         // start game
         gameTimer = new AnimationTimer() {
 
+            /**
+             * Starts the {@code AnimationTimers}. Once it is started, the
+             * handle(long) method of this {@code AnimationTimers} will be
+             * called in every frame.
+             *
+             * The {@code AnimationTimers} can be stopped by calling {@link #stop()}.
+             */
+
             @Override
             public void handle(long now) {
+                paddleTarget = new Vector2D(mouseLoc.x, paddle.getLayoutY());
+                paddle.track(paddleTarget);
+
                 doHandle();
+
                 scene.setOnMouseClicked(event -> {
-                    if (!isBallMoving() && (livesRemaining > 0)) {
-                        addBall();
-                        gameTimer.start();
-                        livesRemaining--;
+                    if (!isTurnInProgress() && (livesRemaining >= 0)) {
+                        try {
+                            for (Ball ball : balls) {
+                                ball.location.set(gameWorld.getWidth() / 2, Settings.PADDLE_Y_OFFSET - Settings.BALL_RADIUS);
+                                ball.velocity = new Vector2D( 0,0);
+                                ball.acceleration = new Vector2D( 0,0);
+                                ball.setVisible(true);
+                                numOfBalls++;
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        setTurnInProgress();
+
+                        try {
+                            for (Ball ball : balls) {
+                                ball.velocity.set(-0.75, -0.75);
+                                ball.location.add(ball.velocity);
+                            }
+                            setBallsMoving();
+                            balls.forEach(Sprite::move);
+                        } catch (ConcurrentModificationException cme) {
+                            cme.printStackTrace();
+                        }
+
+                        balls.forEach(Sprite::display);
                     }
                 });
             }
-
-            private void doHandle() {
-                paddleTarget = new Vector2D(mouseLoc.x, paddle.getLayoutY());
-
-                paddle.track(paddleTarget);
-
-                // check ball for collision with borders
-                try {
-                    balls.forEach(Ball::collisionAtBoundary);
-                } catch (ConcurrentModificationException cme) {
-                    gameTimer.stop();
-                }
-
-                // move sprite
-                paddle.move();
-                balls.forEach(Sprite::move);
-                setBallsMoving();
-
-                if (balls.size() == 0) {
-                    setBallsStopped();
-                } else {
-
-                    // check ball for collision with paddle
-                    for (Ball ball:balls) {
-                        execute(paddle, ball::collisionWithFieldObj);
-                    }
-
-                    // check ball for collision with bricks
-
-                    for (Ball ball:balls) {
-                        for (int i = bricks.size() - 1; i >= 0; i--) {
-                            if (bricks.get(i).isVisible()) {
-                                execute(bricks.get(i), ball::collisionWithFieldObj);
-                            }
-                        }
-                    }
-
-                    // update in fx scene
-                    paddle.display();
-                    balls.forEach(Sprite::display);
-                }
-            }
-            private void execute(Sprite sprite, Consumer<Sprite> s) { s.accept(sprite);}
         };
         gameTimer.start();
     }
+
+    private void doHandle() {
+        try {
+            balls.forEach(Ball::collisionAtBoundary);
+        } catch (ConcurrentModificationException cme) {
+            cme.printStackTrace();
+        }
+
+        // move sprite
+        paddle.move();
+        try {
+            balls.forEach(Ball::move);
+            if (numOfBalls > 0) {
+                setBallsMoving();
+            } else {
+                setBallsStopped();
+            }
+        } catch (ConcurrentModificationException cme) {
+            cme.printStackTrace();
+        }
+
+        if (isBallMoving()) {
+            setTurnInProgress();
+        }
+
+        // check ball for collision with paddle
+        for (Ball ball:balls) {
+            execute(paddle, ball::collisionWithFieldObj);
+        }
+
+        // check ball for collision with bricks
+
+        for (Ball ball:balls) {
+            for (int i = bricks.size() - 1; i >= 0; i--) {
+                if (bricks.get(i).isVisible()) {
+                    execute(bricks.get(i), ball::collisionWithFieldObj);
+                }
+            }
+        }
+
+        // update in fx scene
+        paddle.display();
+        balls.forEach(Sprite::display);
+    }
+
+    private void execute(Sprite sprite, Consumer<Sprite> s) { s.accept(sprite);}
 
     private void prepareGame(Stage primaryStage) {
         primaryStage.setTitle("Breakout");
@@ -124,6 +165,10 @@ public class Main extends Application {
         addPaddle();
 
         // add Bricks
+        addBricks();
+    }
+
+    private void addBricks() {
         int xPos = ((Settings.BRICK_SEP / 2) + (Settings.BRICK_WIDTH / 2));
         int yPos = Settings.BRICK_Y_OFFSET;
 
@@ -155,7 +200,7 @@ public class Main extends Application {
                     default:
                         break;
                 }
-                addBricks(xPos, yPos, brickColor);
+                addOneBrick(xPos, yPos, brickColor);
                 addOneBrickToCount();
                 xPos = xPos + Settings.BRICK_SEP + Settings.BRICK_WIDTH;
             }
@@ -164,7 +209,7 @@ public class Main extends Application {
         }
     }
 
-    private void addBricks(double xPos, double yPos, String color) {
+    private void addOneBrick(double xPos, double yPos, String color) {
 
         Layer layer = gameWorld;
 
@@ -221,7 +266,7 @@ public class Main extends Application {
 
         // register vehicle
         balls.add(ball);
-
+        numOfBalls++;
     }
 
     private void addListeners() {
@@ -241,20 +286,37 @@ public class Main extends Application {
         return ballMoving;
     }
 
-    private void addOneBrickToCount() { bricksRemaining++; }
-
     public int getBricksRemaining() { return bricksRemaining; }
 
-    private static void setBallsStopped() { ballMoving = false; }
+    public static void setBallsStopped() { ballMoving = false; }
+
+    public static void setTurnComplete() { turnInProgress = false; }
+
+    public static void removeBall(Ball ball) {
+        numOfBalls--;
+    }
+
+    public static void subtractLife() {
+        if (livesRemaining >= 0) {
+            livesRemaining--;
+        }
+    }
+
+    private void addOneBrickToCount() { bricksRemaining++; }
 
     private static void setBallsMoving() { ballMoving = true; }
+
+    private static void setTurnInProgress() { turnInProgress = true; }
+
+    private static boolean isTurnInProgress() { return turnInProgress; }
+
+
+
+
+
 
     public static void main(String[] args) {
         launch(args);
     }
 
-    public static void removeBall(Ball ball) {
-        gameWorld.getChildren().remove(ball);
-        balls.remove(ball);
-    }
 }

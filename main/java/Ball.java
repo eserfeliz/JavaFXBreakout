@@ -40,7 +40,13 @@ public class Ball extends Sprite {
             velocity.x = velocity.absX();
         }
         if (location.y >= Settings.SCENE_HEIGHT) {
+            setVisible(false);
+            velocity.set(0,0);
+            acceleration.multiply(0);
             Main.removeBall(this);
+            Main.setBallsStopped();
+            Main.setTurnComplete();
+            Main.subtractLife();
         }
         if (location.y <= (Settings.BALL_RADIUS)) {
             velocity.y = velocity.absY();
