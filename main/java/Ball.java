@@ -8,8 +8,6 @@ import java.util.List;
  */
 public class Ball extends Sprite {
 
-    private List<Vector2D> brickCollisionPoints;
-
     public Ball(Layer layer, Vector2D location, Vector2D velocity, Vector2D acceleration, double width, double height) {
         super(layer, location, velocity, acceleration, width, height);
     }
@@ -43,7 +41,7 @@ public class Ball extends Sprite {
             setVisible(false);
             velocity.set(0,0);
             acceleration.multiply(0);
-            Main.removeBall(this);
+            Main.subtractFromBallCount(this);
             Main.setBallsStopped();
             Main.setTurnComplete();
             Main.subtractLife();
@@ -72,7 +70,7 @@ public class Ball extends Sprite {
     private void collisionWithBrick(Brick b, double d) {
         int combinationResult = 0;
 
-        brickCollisionPoints = b.getBrickCollisionPoints();
+        List<Vector2D> brickCollisionPoints = b.getBrickCollisionPoints();
 
         for (int i = 0; i < brickCollisionPoints.size(); i++) {
             if ((i == 0) && (Settings.BALL_RADIUS >= (brickCollisionPoints.get(i).x - location.x)) && ((brickCollisionPoints.get(i).x - location.x) >= 0)) {

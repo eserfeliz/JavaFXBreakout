@@ -16,7 +16,6 @@ public class Main extends Application {
     private static Layer gameWorld;
 
     private static List<Ball> balls = new ArrayList<>();
-    private static List<Ball> ballsToRemove = new ArrayList<>();
     private List<Brick> bricks = new ArrayList<>();
     private Paddle paddle;
 
@@ -34,8 +33,8 @@ public class Main extends Application {
     private static boolean turnInProgress = false;
 
     private int bricksRemaining = 0;
-    public static int livesRemaining = 2;
-    public static int numOfBalls = 0;
+    private static int livesRemaining = 2;
+    private static int numOfBalls = 0;
 
     public void start(Stage primaryStage) throws Exception {
         if (!gameStarted) {
@@ -266,7 +265,7 @@ public class Main extends Application {
 
         // register vehicle
         balls.add(ball);
-        numOfBalls++;
+        addToBallCount();
     }
 
     private void addListeners() {
@@ -278,9 +277,7 @@ public class Main extends Application {
         mouseGestures.trackMouseMovement(scene);
     }
 
-    public static boolean isGameStarted() {
-        return gameStarted;
-    }
+    public static boolean isGameStarted() { return gameStarted; }
 
     public static boolean isBallMoving() {
         return ballMoving;
@@ -292,9 +289,7 @@ public class Main extends Application {
 
     public static void setTurnComplete() { turnInProgress = false; }
 
-    public static void removeBall(Ball ball) {
-        numOfBalls--;
-    }
+    public static void subtractFromBallCount(Ball ball) { numOfBalls--; }
 
     public static void subtractLife() {
         if (livesRemaining >= 0) {
@@ -309,6 +304,8 @@ public class Main extends Application {
     private static void setTurnInProgress() { turnInProgress = true; }
 
     private static boolean isTurnInProgress() { return turnInProgress; }
+
+    private static void addToBallCount() { numOfBalls++; }
 
 
 

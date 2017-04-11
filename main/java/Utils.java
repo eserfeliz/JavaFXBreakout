@@ -44,9 +44,6 @@ public class Utils {
 
         WritableImage wi;
 
-        double arrowWidth = width - strokeWidth * 2;
-        double arrowHeight = height - strokeWidth * 2;
-
         Circle ball = new Circle( 0, 0, width, Color.BLACK);
         ball.setStroke(stroke);
         ball.setFill(fill);
