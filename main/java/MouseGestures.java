@@ -7,25 +7,15 @@ import javafx.scene.input.MouseEvent;
  */
 public class MouseGestures {
 
-    final MoveContext moveContext = new MoveContext();
+    private final MoveContext moveContext = new MoveContext();
 
     public void trackMouseMovement(final Scene scene) {
-
         scene.setOnMouseMoved(onMouseMovedEventHandler);
-
     }
 
-    EventHandler<MouseEvent> onMouseMovedEventHandler = new EventHandler<MouseEvent>() {
-        @Override
-        public void handle(MouseEvent event) {
-            moveContext.x = event.getX();
-        }
-    };
+    private EventHandler<MouseEvent> onMouseMovedEventHandler = event -> moveContext.x = event.getX();
 
-    class MoveContext {
-
-        double x;
-        double y;
-
+    private class MoveContext {
+        double x, y;
     }
 }
